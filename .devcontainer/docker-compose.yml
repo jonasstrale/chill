@@ -1,0 +1,48 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ..:/workspace:cached
+      - pnpm-store:/home/node/.local/share/pnpm/store
+    working_dir: /workspace
+    command: sleep infinity
+    depends_on:
+      postgres:
+        condition: service_healthy
+      keycloak:
+        condition: service_started
+  postgres:
+    image: postgres:18
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: economy
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d economy"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.3.5
+    command: ["start-dev", "--import-realm"]
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - "8080:8080"
+    volumes:
+      - ../infra/keycloak:/opt/keycloak/data/import:ro
+  mailpit:
+    image: axllent/mailpit:v1.27.6
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+volumes:
+  pnpm-store:
+  postgres-data:
