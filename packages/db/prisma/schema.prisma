@@ -1,0 +1,48 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Ledger {
+  id          String        @id @default(cuid())
+  name        String
+  slug        String        @unique
+  createdAt   DateTime      @default(now())
+  accounts    Account[]
+  transactions Transaction[]
+}
+
+model Account {
+  id        String   @id @default(cuid())
+  ledgerId  String
+  name      String
+  code      String
+  kind      String
+  createdAt DateTime @default(now())
+  ledger    Ledger   @relation(fields: [ledgerId], references: [id], onDelete: Cascade)
+
+  @@unique([ledgerId, code])
+}
+
+model Transaction {
+  id          String            @id @default(cuid())
+  ledgerId    String
+  description String
+  bookedAt    DateTime
+  createdAt   DateTime          @default(now())
+  ledger      Ledger            @relation(fields: [ledgerId], references: [id], onDelete: Cascade)
+  entries     TransactionEntry[]
+}
+
+model TransactionEntry {
+  id            String      @id @default(cuid())
+  transactionId String
+  accountId     String
+  direction     String
+  amountMinor   BigInt
+  transaction   Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+}

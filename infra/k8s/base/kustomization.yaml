@@ -1,0 +1,6 @@
+resources:
+  - namespace.yaml
+  - web-deployment.yaml
+  - api-deployment.yaml
+  - web-service.yaml
+  - api-service.yaml

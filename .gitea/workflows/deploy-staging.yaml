@@ -1,0 +1,22 @@
+name: deploy-staging
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  update-staging-manifests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Update staging images
+        run: |
+          sed -i "s|image: registry.local/economy/web:.*|image: registry.local/economy/web:${{ gitea.sha }}|" infra/k8s/overlays/staging/web-patch.yaml
+          sed -i "s|image: registry.local/economy/api:.*|image: registry.local/economy/api:${{ gitea.sha }}|" infra/k8s/overlays/staging/api-patch.yaml
+      - name: Commit manifest update
+        run: |
+          git config user.name "automation"
+          git config user.email "automation@local"
+          git add infra/k8s/overlays/staging
+          git commit -m "chore: promote main to staging ${GITEA_SHA}" || exit 0
+          git push

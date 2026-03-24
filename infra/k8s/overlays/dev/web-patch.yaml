@@ -1,0 +1,10 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: economy-web
+spec:
+  template:
+    spec:
+      containers:
+        - name: web
+          image: registry.local/economy/web:dev

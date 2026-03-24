@@ -1,0 +1,25 @@
+{
+  "name": "economy-platform",
+  "private": true,
+  "packageManager": "pnpm@10.17.1",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "build": "pnpm -r build",
+    "dev": "pnpm --parallel --filter @economy/web --filter @economy/api dev",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test",
+    "test:unit": "pnpm -r --filter ./packages/* --filter ./apps/* test",
+    "test:integration": "pnpm --filter @economy/api test:integration",
+    "test:e2e": "pnpm --filter @economy/e2e test",
+    "verify": "pnpm lint && pnpm typecheck && pnpm test && pnpm test:integration && pnpm test:e2e",
+    "compose:up": "docker compose -f .devcontainer/docker-compose.yml up -d postgres keycloak mailpit",
+    "compose:down": "docker compose -f .devcontainer/docker-compose.yml down -v",
+    "db:generate": "pnpm --filter @economy/db db:generate",
+    "db:migrate:dev": "pnpm --filter @economy/db db:migrate:dev",
+    "db:seed": "pnpm --filter @economy/db db:seed",
+    "sops:check": "bash scripts/check-no-plaintext-secrets.sh"
+  }
+}

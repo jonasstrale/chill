@@ -1,0 +1,43 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Enable corepack
+        run: corepack enable
+      - name: Install
+        run: pnpm install --frozen-lockfile=false
+      - name: Lint
+        run: pnpm lint
+      - name: Typecheck
+        run: pnpm typecheck
+      - name: Unit tests
+        run: pnpm test
+      - name: Integration tests
+        run: pnpm test:integration
+      - name: E2E tests
+        run: pnpm test:e2e
+      - name: Secret guard
+        run: pnpm sops:check
+
+  build-and-scan:
+    runs-on: ubuntu-latest
+    needs: verify
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build web image
+        run: docker build -t registry.local/economy/web:${{ gitea.sha }} -f apps/web/Dockerfile .
+      - name: Build api image
+        run: docker build -t registry.local/economy/api:${{ gitea.sha }} -f apps/api/Dockerfile .
+      - name: Trivy repo scan
+        run: docker run --rm -v "$PWD:/repo" aquasec/trivy:0.66.0 fs --exit-code 1 --severity HIGH,CRITICAL /repo

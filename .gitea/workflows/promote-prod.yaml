@@ -1,0 +1,25 @@
+name: promote-prod
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_sha:
+        description: Commit SHA already validated in staging
+        required: true
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Update prod images
+        run: |
+          sed -i "s|image: registry.local/economy/web:.*|image: registry.local/economy/web:${{ inputs.release_sha }}|" infra/k8s/overlays/prod/web-patch.yaml
+          sed -i "s|image: registry.local/economy/api:.*|image: registry.local/economy/api:${{ inputs.release_sha }}|" infra/k8s/overlays/prod/api-patch.yaml
+      - name: Commit production promotion
+        run: |
+          git config user.name "manual-promotion"
+          git config user.email "manual-promotion@local"
+          git add infra/k8s/overlays/prod
+          git commit -m "release: promote ${{ inputs.release_sha }} to production"
+          git push

@@ -1,0 +1,25 @@
+{
+  "realm": "economy",
+  "enabled": true,
+  "clients": [
+    {
+      "clientId": "economy-web",
+      "publicClient": false,
+      "redirectUris": ["http://localhost:3000/*"],
+      "secret": "replace-me"
+    },
+    {
+      "clientId": "economy-api",
+      "publicClient": false,
+      "serviceAccountsEnabled": true,
+      "secret": "replace-me"
+    }
+  ],
+  "roles": {
+    "realm": [
+      { "name": "admin" },
+      { "name": "accountant" },
+      { "name": "viewer" }
+    ]
+  }
+}

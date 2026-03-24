@@ -1,0 +1,6 @@
+namespace: economy
+resources:
+  - ../../base
+patches:
+  - path: web-patch.yaml
+  - path: api-patch.yaml

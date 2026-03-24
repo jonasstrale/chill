@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: economy-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: economy-api
+  template:
+    metadata:
+      labels:
+        app: economy-api
+    spec:
+      containers:
+        - name: api
+          image: registry.local/economy/api:latest
+          ports:
+            - containerPort: 4000
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
