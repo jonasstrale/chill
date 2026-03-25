@@ -11,17 +11,19 @@
     "test": "vitest run",
     "db:generate": "prisma generate",
     "db:migrate:dev": "prisma migrate dev",
-    "db:seed": "tsx src/seed.ts"
+    "db:seed": "tsx src/seed.ts",
+    "pretypecheck": "pnpm db:generate",
+    "prebuild": "pnpm db:generate"
   },
   "dependencies": {
     "@prisma/client": "^6.16.2"
   },
   "devDependencies": {
+    "@types/node": "^24.3.0",
+    "eslint": "^10.1.0",
     "prisma": "^6.16.2",
     "tsx": "^4.20.5",
     "typescript": "^5.9.2",
-    "vitest": "^3.2.4",
-    "eslint": "^9.35.0",
-    "@types/node": "^24.3.0"
+    "vitest": "^3.2.4"
   }
 }

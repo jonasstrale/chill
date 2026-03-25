@@ -14,6 +14,8 @@ Opinionated on-prem starter repo for a responsive multi-ledger finance app.
 - latest stable lines by default
 - secure by default
 
+The repo-level contract for people and autonomous agents lives in [`AGENTS.md`](./AGENTS.md). The fuller delivery policy is documented in [`docs/engineering-charter.md`](./docs/engineering-charter.md).
+
 ## Stack
 
 - Node.js 24 LTS
@@ -51,10 +53,10 @@ This repo is generated as code scaffolding. You still need a first real install 
 
 ## Deploy flow
 
-- push/PR -> lint, typecheck, unit, integration, e2e, image build, Trivy
+- push/PR -> policy check, lint, typecheck, unit, integration, e2e, image build, Trivy
 - merge to main -> update staging manifests
 - Argo CD syncs staging
-- production deploy only from manual promotion workflow
+- production deploy only from manual promotion workflow with explicit human `go`
 
 ## Secrets
 

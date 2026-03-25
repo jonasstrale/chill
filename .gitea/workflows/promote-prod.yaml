@@ -6,12 +6,21 @@ on:
       release_sha:
         description: Commit SHA already validated in staging
         required: true
+      approval_phrase:
+        description: Type go to confirm production promotion
+        required: true
 
 jobs:
   promote:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Validate approval phrase
+        run: |
+          if [ "${{ inputs.approval_phrase }}" != "go" ]; then
+            echo 'Production promotion requires approval_phrase=go' >&2
+            exit 1
+          fi
       - name: Update prod images
         run: |
           sed -i "s|image: registry.local/economy/web:.*|image: registry.local/economy/web:${{ inputs.release_sha }}|" infra/k8s/overlays/prod/web-patch.yaml

@@ -14,12 +14,18 @@
     "test:unit": "pnpm -r --filter ./packages/* --filter ./apps/* test",
     "test:integration": "pnpm --filter @economy/api test:integration",
     "test:e2e": "pnpm --filter @economy/e2e test",
-    "verify": "pnpm lint && pnpm typecheck && pnpm test && pnpm test:integration && pnpm test:e2e",
+    "verify": "pnpm policy:check && pnpm lint && pnpm typecheck && pnpm test && pnpm test:integration && pnpm test:e2e",
     "compose:up": "docker compose -f .devcontainer/docker-compose.yml up -d postgres keycloak mailpit",
     "compose:down": "docker compose -f .devcontainer/docker-compose.yml down -v",
     "db:generate": "pnpm --filter @economy/db db:generate",
     "db:migrate:dev": "pnpm --filter @economy/db db:migrate:dev",
     "db:seed": "pnpm --filter @economy/db db:seed",
-    "sops:check": "bash scripts/check-no-plaintext-secrets.sh"
+    "sops:check": "bash scripts/check-no-plaintext-secrets.sh",
+    "policy:check": "node scripts/validate-platform-policy.mjs",
+    "postinstall": "pnpm db:generate"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "typescript-eslint": "^8.57.2"
   }
 }

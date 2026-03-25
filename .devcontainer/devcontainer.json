@@ -5,9 +5,13 @@
   "workspaceFolder": "/workspace",
   "remoteUser": "node",
   "features": {},
-  "postCreateCommand": "corepack enable && pnpm install",
+  "containerEnv": {
+    "COREPACK_ENABLE_DOWNLOAD_PROMPT": "0"
+  },
+  "postCreateCommand": "corepack enable && pnpm install && pnpm --filter @economy/e2e exec playwright install chromium",
   "remoteEnv": {
-    "OPENAI_API_KEY": "${localEnv:OPENAI_API_KEY}"
+    "OPENAI_API_KEY": "${localEnv:OPENAI_API_KEY}",
+    "COREPACK_ENABLE_DOWNLOAD_PROMPT": "0"
   },
   "customizations": {
     "vscode": {
@@ -27,5 +31,6 @@
         }
       }
     }
-  }
+  },
+  "postStartCommand": "corepack enable"
 }
